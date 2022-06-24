@@ -1,24 +1,22 @@
-package jpabook.jpashop;
+package jpabook.jpashop.domain.item;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@DiscriminatorValue("A")
 @Entity
-public class Member {
+public class Album extends Item {
 
-    @Id
-    @GeneratedValue
-    private Long id;
-    private String username;
+    private String artist;
+    private String etc;
 
 }
