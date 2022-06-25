@@ -29,23 +29,4 @@ class MemberRepositoryTest {
     void tearDown() {
     }
 
-    @Test
-    @Transactional
-    @Rollback(value = false)
-    public void testMember() throws Exception {
-        //given
-        Member member = Member.builder()
-                .username("memberA")
-                .build();
-
-        //when
-        Long savedId = memberRepository.save(member);
-        Member findMember = memberRepository.find(savedId);
-
-        //then
-        assertThat(findMember.getId()).isEqualTo(member.getId());
-        assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
-        // 같은 트랜잭션 안에서는 영속성 컨텍스트가 동일하므로 id가 같으면 동일한 엔티티(객체)로 인식
-        assertThat(findMember).isEqualTo(member);
-    }
 }
