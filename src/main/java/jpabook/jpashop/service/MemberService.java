@@ -31,7 +31,7 @@ public class MemberService {
         // 데이터베이스의 name 컬럼에 Unique 제약조건까지 넣어야 안전
         List<Member> findMembers = memberRepository.findByName(member.getName());
         if (!findMembers.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
+            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
         }
     }
 
