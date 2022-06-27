@@ -1,22 +1,24 @@
 package jpabook.jpashop.domain.item;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("M")
 @Entity
 public class Movie extends Item {
 
     private String director;
     private String actor;
+
+    @Builder
+    public Movie(String name, int price, int stockQuantity, String director, String actor) {
+        super(name, price, stockQuantity);
+        this.director = director;
+        this.actor = actor;
+    }
 
 }

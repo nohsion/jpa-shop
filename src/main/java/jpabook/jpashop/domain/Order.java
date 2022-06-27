@@ -57,16 +57,17 @@ public class Order {
 
     //== 생성 메소드 ==//
     public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
-        Order order = Order.builder()
+        List<OrderItem> orderItemList = new ArrayList<>();
+        for (OrderItem orderItem : orderItems) {
+            orderItemList.add(orderItem);
+        }
+        return Order.builder()
                 .member(member)
                 .delivery(delivery)
+                .orderItems(orderItemList)
                 .status(OrderStatus.ORDER)
                 .orderDate(LocalDateTime.now())
                 .build();
-        for (OrderItem orderItem : orderItems) {
-            order.addOrderItem(orderItem);
-        }
-        return order;
     }
 
     //== 비즈니스 로직 ==//
