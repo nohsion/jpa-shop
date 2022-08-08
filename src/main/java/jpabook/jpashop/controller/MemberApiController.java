@@ -1,21 +1,52 @@
 package jpabook.jpashop.controller;
 
+import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 public class MemberApiController {
 
     private final MemberService memberService;
+
+    @GetMapping("/api/v1/members")
+    public List<Member> membersV1() {
+        return memberService.findMembers();
+    }
+
+    @GetMapping("/api/v2/members")
+    public Result membersV2() {
+        List<Member> findMembers = memberService.findMembers();
+        List<MemberDto> members = findMembers.stream().map(m -> new MemberDto(m.getName(), m.getAddress())).collect(Collectors.toList());
+
+        return new Result(members.size(), members);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private int count;
+        private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class MemberDto {
+        private String name;
+        private Address address;
+    }
 
     @PostMapping("/api/v1/members")
     public CreateMemberResponse saveMemberV1(@RequestBody @Valid Member member) {
@@ -25,8 +56,14 @@ public class MemberApiController {
 
     @PostMapping("/api/v2/members")
     public CreateMemberResponse saveMemberV2(@RequestBody @Valid CreateMemberRequest request) {
+        Address address = Address.builder()
+                .city(request.getCity())
+                .street(request.getStreet())
+                .zipcode(request.getZipcode())
+                .build();
         Member member = Member.builder()
                 .name(request.getName())
+                .address(address)
                 .build();
         Long id = memberService.join(member);
         return new CreateMemberResponse(id);
@@ -39,7 +76,7 @@ public class MemberApiController {
         return new UpdateMemberResponse(findMember.getId(), findMember.getName());
     }
 
-    @Data
+    @Getter
     static class UpdateMemberRequest {
         private String name;
     }
@@ -51,10 +88,13 @@ public class MemberApiController {
         private String name;
     }
 
-    @Data
+    @Getter
     static class CreateMemberRequest {
         @NotEmpty
         private String name;
+        private String city;
+        private String street;
+        private String zipcode;
     }
 
     @Data
