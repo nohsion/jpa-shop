@@ -44,4 +44,10 @@ public class MemberService {
     public Member findOne(Long id) {
         return memberRepository.findOne(id);
     }
+
+    @Transactional
+    public void update(Long id, String name) {
+        Member member = memberRepository.findOne(id);
+        member.update(name); // 영속 상태니까 트랜잭션 내에서 변경 감지하여 끝날때 flush -> commit
+    }
 }
